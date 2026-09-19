@@ -1,88 +1,94 @@
-# Student Performance Prediction Using Machine Learning
+# 🎓 Student Performance Prediction
 
-## Project Overview
+A machine-learning project that predicts a student's expected test score from **age, study hours, and attendance percentage**.
 
-This project predicts a student's test score using Machine Learning based on:
+## Live application
 
-- Age
-- Study Hours
-- Attendance Percentage
+Deploy this project with Streamlit Community Cloud and use `app.py` as the application entry point.
 
-It also predicts the student's grade using a classification model.
+## What the project does
 
-## Features
+- Loads and explores student-performance data
+- Handles missing values
+- Removes duplicate records
+- Treats impossible study-hour and attendance values as missing
+- Trains and evaluates regression models in the notebook
+- Uses a Random Forest regression model for the deployed predictor
+- Saves the trained model with Joblib
+- Provides a Streamlit web interface for predictions
 
-- Data loading using Pandas
-- Missing value handling
-- Duplicate value removal
-- Data type checking
-- Label Encoding
-- Exploratory Data Analysis
-- Regression models
-- Classification model
-- Model evaluation
-- Student test score prediction
-- Model saving using Joblib
+## Model
 
-## Machine Learning Models
+The deployed model is a Random Forest Regressor with 300 trees. On the cleaned dataset and a fixed 80/20 test split (`random_state=42`), the current training script produced:
 
-### Regression
+- R²: about **0.72**
+- MAE: about **9.11 points**
+- RMSE: about **11.68 points**
 
-- Linear Regression
-- Decision Tree Regressor
-- Random Forest Regressor
+These are test-set measurements for this dataset, not guarantees for new data.
 
-### Classification
+## Grade mapping
 
-- Random Forest Classifier
+The application converts the predicted score into the grade bands represented by the dataset:
 
-## Evaluation Metrics
+| Score | Grade |
+|---:|:---|
+| 91–100 | A+ |
+| 81–90 | A |
+| 66–80 | B |
+| 51–65 | C |
+| 0–50 | F |
 
-Regression:
+Grade is derived from the predicted score instead of training a classifier using `Test_Score` as an input. This avoids target leakage.
 
-- R² Score
-- Mean Absolute Error (MAE)
-- Mean Squared Error (MSE)
-
-Classification:
-
-- Accuracy
-- Precision
-- Recall
-- F1 Score
-- Confusion Matrix
-
-## Technologies Used
-
-- Python
-- Pandas
-- NumPy
-- Matplotlib
-- Seaborn
-- Scikit-learn
-- Joblib
-- Jupyter Notebook
-
-## Project Structure
+## Project structure
 
 ```text
 Student-Performance-Prediction/
-│
+├── app.py
 ├── data/
 │   └── student_performance.csv
-│
 ├── models/
-│   ├── student_score_model.pkl
-│   ├── student_scaler.pkl
-│   └── student_grade_model.pkl
-│
+│   └── student_score_model.pkl
 ├── notebook/
 │   └── student_performance.ipynb
-│
 ├── screenshots/
-│
 ├── src/
-│
-├── README.md
-├── requirements.txt
-└── .gitignore
+│   └── train_model.py
+├── .gitignore
+└── requirements.txt
+```
+
+## Run locally
+
+```bash
+python -m venv .venv
+```
+
+Windows:
+
+```bash
+.venv\Scripts\activate
+```
+
+Install dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+
+Run:
+
+```bash
+streamlit run app.py
+```
+
+## Retrain the model
+
+```bash
+python src/train_model.py
+```
+
+## Dataset notes
+
+The supplied dataset contains 1,020 rows and includes some missing values, duplicate records, negative study-hour values, and attendance values above 100%. The training script removes duplicate rows and treats impossible numeric values as missing before imputation.
